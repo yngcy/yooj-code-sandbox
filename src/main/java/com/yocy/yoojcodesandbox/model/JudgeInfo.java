@@ -11,6 +11,11 @@ import lombok.Data;
 public class JudgeInfo {
 
     /**
+     * 程序执行结果
+     */
+    private String result;
+
+    /**
      * 程序执行信息
      */
     private String message;

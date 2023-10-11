@@ -180,8 +180,12 @@ public abstract class JavaCodeSandboxTemplate implements CodeSandbox {
         File userCodeFile = saveCode2File(code);
 
         // 编译代码，得到 class 文件
-        ExecuteMessage compileFileExecuteMessage = compileFile(userCodeFile);
-        System.out.println(compileFileExecuteMessage);
+        try {
+            ExecuteMessage compileFileExecuteMessage = compileFile(userCodeFile);
+        } catch (Exception e) {
+            return getErrorResponse(e);
+        }
+//        System.out.println(compileFileExecuteMessage);
         
         // 执行代码，得到输出结果
         List<ExecuteMessage> executeMessages = runFile(userCodeFile, inputList);
@@ -203,12 +207,15 @@ public abstract class JavaCodeSandboxTemplate implements CodeSandbox {
      * @return
      */
     private ExecuteCodeResponse getErrorResponse(Throwable e) {
+        System.out.println(e.getMessage());
         ExecuteCodeResponse executeCodeResponse = new ExecuteCodeResponse();
         executeCodeResponse.setOutputList(new ArrayList<>());
         executeCodeResponse.setMessage(e.getMessage());
-        // 表示代码沙箱出错
+        // 表示代码沙箱出错（暂定 2 是编译错误）
         executeCodeResponse.setStatus(2);
-        executeCodeResponse.setJudgeInfo(new JudgeInfo());
+        // 一般是编译错误，将错误返回到message中
+        JudgeInfo judgeInfo = new JudgeInfo();
+        executeCodeResponse.setJudgeInfo(judgeInfo);
         return executeCodeResponse;
     }
 }
